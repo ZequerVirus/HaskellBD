@@ -74,8 +74,15 @@ menuAltas = do
                         hFlush stdout
                         -- recibo id, sigla materia y codigo profesor
                         iDsigcod <- getLine
-                        -- asigno con words los datos recibidos y los almaceno en sus variables
                         let (iD:sig:cod:_) = words iDsigcod
+
+                        let path = "src/json/GrupoMateria.json"
+                        gm <- loadJSON path
+                        let newgm = addGrupoMateria iD sig cod gm
+                        saveJSON path newgm
+                        putStr "Anadido con exito"
+                        threadDelay 1000000
+                        menuAltas
 
                     "2" -> do 
                         putStr "Inserte Historico (Registro Sigla Nota): "
@@ -83,6 +90,14 @@ menuAltas = do
                         -- aqui recibo registro, sigla y nota
                         regsignota <- getLine
                         let (reg:sig:nota:_) = words regsignota
+
+                        let path = "src/json/Historico.json"
+                        historicos <- loadJSON path
+                        let newhistoricos = addHistorico reg sig nota historicos
+                        saveJSON path newhistoricos
+                        putStr "Anadido con exito"
+                        threadDelay 1000000
+                        menuAltas
 
                     "3" -> do 
                         menuPrincipal
@@ -134,7 +149,7 @@ menuBajas = do
                     "4" -> do
                         putStr "Ingrese id de grupo-materia: "
                         hFlush stdout
-                        id <- getLine
+                        iD <- getLine
                         return()
 
                     "5" -> do
@@ -155,14 +170,17 @@ menuBajas = do
 
 saveJSON::FilePath->[[String]]->IO()
 -- funcion para guardar las tablas en su respectivo JSON
-saveJSON path tabla = let
-                        encodetabla = encode(tabla)
-                      in 
-                        BL.writeFile path encodetabla 
+saveJSON path tabla = do 
+                      let encodetabla = encode tabla 
+                      BL.writeFile path encodetabla 
 
-loadJSON::FilePath->IO (Maybe [[String]])
+loadJSON::FilePath->IO([[String]])
 -- funcion para obtener el contenido de las tablas desde su JSON
 loadJSON path = do 
-    tabla <- BL.readFile path
-    let contenido = decode tabla
-    return (contenido)
+                tabla <- BL.readFile path
+                let contenido = decode tabla
+                return (desempaquetar contenido)
+
+desempaquetar::Maybe[[String]]->[[String]]
+desempaquetar (Just lista) = lista
+desempaquetar Nothing = []
