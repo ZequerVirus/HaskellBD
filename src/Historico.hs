@@ -44,8 +44,3 @@ buscarHistorico reg iD (x:l) pos = let
                                         pos
                                     else 
                                         esclavo
-
-
-
-
-
