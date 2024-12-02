@@ -36,7 +36,7 @@ deleteProfesor codigo profesores = let
 buscarProfesor::String->[[String]]->Int->Int
 buscarProfesor codigo [] pos = pos
 buscarProfesor codigo (x:l) pos = let 
-                                    nuevapos = posicion + 1
+                                    nuevapos = pos + 1
                                     esclavo = buscarProfesor codigo l nuevapos
                                     elemcodigo = obtenerElemento x 0
                                   in 

@@ -32,7 +32,7 @@ deleteHistorico reg iD historicos = let
                                       else 
                                         error "Error - Posicion invalida"
 
-buscarHistorico::String::String::[[String]]->Int->Int
+buscarHistorico::String->String->[[String]]->Int->Int
 buscarHistorico reg iD [] pos = pos
 buscarHistorico reg iD (x:l) pos = let 
                                     nuevapos = pos + 1 
