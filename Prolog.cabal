@@ -30,6 +30,7 @@ library
       Historico
       Lib
       Materia
+      Otros
       Profesor
   other-modules:
       Paths_Prolog
@@ -43,6 +44,7 @@ library
     , ansi-terminal
     , base >=4.7 && <5
     , bytestring
+    , deepseq
   default-language: Haskell2010
 
 executable Prolog-exe
@@ -60,6 +62,7 @@ executable Prolog-exe
     , ansi-terminal
     , base >=4.7 && <5
     , bytestring
+    , deepseq
   default-language: Haskell2010
 
 test-suite Prolog-test
@@ -78,4 +81,5 @@ test-suite Prolog-test
     , ansi-terminal
     , base >=4.7 && <5
     , bytestring
+    , deepseq
   default-language: Haskell2010
