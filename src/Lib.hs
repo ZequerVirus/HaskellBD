@@ -241,14 +241,6 @@ menuTablas = do
              putStrLn "6. Volver (menu principal)"
              putStrLn "------------------------------------"
 
-<<<<<<< HEAD
-loadJSON::FilePath->IO (Maybe [[String]])
--- funcion para obtener el contenido de las tablas desde su JSON
-loadJSON path = do 
-    tabla <- BL.readFile path
-    let contenido = decode tabla
-    return (contenido)
-=======
              putStr "Escoge una opcion: "
              hFlush stdout
              opcion <- getLine
@@ -317,4 +309,3 @@ loadJSON path = do
                     putStrLn "Opcion invalida. \n Reiniciando..."
                     threadDelay 2000000
                     menuTablas
->>>>>>> refs/remotes/origin/zequervirus
