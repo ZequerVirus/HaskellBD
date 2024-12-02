@@ -7,13 +7,10 @@ module Lib
     ) where
 
 -- aqui las dependencias
-import System.IO (hFlush, stdout,) --para mostrar bien los out
+import System.IO (hFlush, stdout) --para mostrar bien los out
 import System.Console.ANSI (clearScreen) --para reiniciar la terminal
 import Control.Concurrent (threadDelay) --para tiempos de espera
-import Data.Aeson (encode, decode) -- encode en json
-import qualified Data.ByteString.Lazy as BL --para escribir archivos
-import Control.Exception (evaluate)
---import Control.DeepSeq (force) -- forzar que los archivos cierren
+import Otros
 -- dependencias de tablas
 import Historico
 import Alumno 
@@ -125,7 +122,7 @@ menuAltas = do
                     _ -> do 
                         putStrLn "Opcion invalida.\n Reiniciando..."
                         --esta en microsegundos (1000000 ms = 1 s)
-                        threadDelay 2000000 
+                        threadDelay 1000000 
                         menuAltas
 
 menuBajas:: IO()
@@ -152,32 +149,70 @@ menuBajas = do
                         putStr "Ingrese registro de alumno: "
                         hFlush stdout
                         reg <- getLine
-                        return()
+                        let (register:_) = words reg
+
+                        let path = "src/json/Alumno.json"
+                        alumnos <- loadJSON path
+                        let newalumnos= deleteAlumno register alumnos
+                        saveJSON path newalumnos
+                        putStrLn "Eliminado con exito"
+                        threadDelay 1000000
+                        menuBajas
 
                     "2" -> do 
                         putStr "Ingrese codigo de profesor: "
                         hFlush stdout
-                        codigo <- getLine
-                        return()
+                        cod <- getLine
+                        let (codigo:_) = words cod
+
+                        let path = "src/json/Profesor.json"
+                        profesores <- loadJSON path
+                        let newprofesores= deleteProfesor codigo profesores
+                        saveJSON path newprofesores
+                        putStrLn "Eliminado con exito"
+                        threadDelay 1000000
+                        menuBajas
 
                     "3" -> do
                         putStr "Ingrese sigla de materia: "
                         hFlush stdout
-                        sigla <- getLine
-                        return()
+                        sig <- getLine
+                        let (sigla:_) = words sig
+
+                        let path = "src/json/Materia.json"
+                        materias <- loadJSON path
+                        let newmaterias= deleteMateria siglas materias
+                        saveJSON path newmaterias
+                        putStrLn "Eliminado con exito"
+                        threadDelay 1000000
+                        menuBajas
 
                     "4" -> do
                         putStr "Ingrese id de grupo-materia: "
                         hFlush stdout
-                        iD <- getLine
-                        return()
+                        ident <- getLine
+                        let (iD:_) = words ident
+
+                        let path = "src/json/GrupoMateria.json"
+                        gm <- loadJSON path
+                        let newgm = deleteGrupoMateria ident gm
+                        saveJSON path newgm
+                        putStrLn "Eliminado con exito"
+                        threadDelay 1000000
+                        menuBajas
 
                     "5" -> do
                         putStr "Ingrese registro e id de historico: "
                         hFlush stdout
                         regiD <- getLine 
-                        let (reg:iD:_) = words regiD
-                        return()
+                        let (register:iD:_) = words regiD
+                        let path = "src/json/Historico.json"
+                        historicos <- loadJSON path
+                        let newhistoricos= deleteHistorico register iD historicos
+                        saveJSON path newalumnos
+                        putStrLn "Eliminado con exito"
+                        threadDelay 1000000
+                        menuBajas
 
                     "6" -> do 
                         menuPrincipal
@@ -185,7 +220,7 @@ menuBajas = do
                     _ -> do 
                         putStrLn "Opcion invalida.\n Reiniciando..."
                         --esta en microsegundos (1000000 ms = 1 s)
-                        threadDelay 2000000 
+                        threadDelay 1000000 
                         menuBajas
 
 menuTablas:: IO()
@@ -200,21 +235,71 @@ menuTablas = do
              putStrLn "6. Volver (menu principal)"
              putStrLn "------------------------------------"
 
-saveJSON::FilePath->[[String]]->IO()
--- funcion para guardar las tablas en su respectivo JSON
-saveJSON path tabla = do 
-                      let encodetabla = encode tabla 
-                      BL.writeFile path encodetabla
+             putStr "Escoge una opcion: "
+             hFlush stdout
+             opcion <- getLine
 
-loadJSON::FilePath->IO([[String]])
--- funcion para obtener el contenido de las tablas desde su JSON
-loadJSON path = do 
-                tabla <- BL.readFile path
-                let contenido = decode tabla
-                print (length(desempaquetar contenido))
-                return (desempaquetar contenido) 
+             case opcion of 
+                "1" -> do 
+                    clearScreen
+                    putStrLn "Presione cualquier tecla para volver al menu"
+                    putStr "Cantidad:"
+                    alumno <- loadJSON "src/json/Alumno.json"
+                    mostrar alumno
+                    hFlush stdout
+                    boton <- getLine
+                    case boton of 
+                        _ -> menuTablas
+
+                "2" -> do
+                    clearScreen
+                    putStrLn "Presione cualquier tecla para volver al menu"
+                    putStr "Cantidad:"
+                    profesor <- loadJSON "src/json/Profesor.json"
+                    mostrar profesor
+                    hFlush stdout
+                    boton <- getLine
+                    case boton of 
+                        _ -> menuTablas
+
+                "3" -> do
+                    clearScreen
+                    putStrLn "Presione cualquier tecla para volver al menu"
+                    putStr "Cantidad:"
+                    materia <- loadJSON "src/json/Materia.json"
+                    mostrar materia
+                    hFlush stdout
+                    boton <- getLine
+                    case boton of 
+                        _ -> menuTablas
+
+                "4" -> do
+                    clearScreen
+                    putStrLn "Presione cualquier tecla para volver al menu"
+                    putStr "Cantidad:"
+                    gm <- loadJSON "src/json/GrupoMateria.json"
+                    mostrar gm
+                    hFlush stdout
+                    boton <- getLine
+                    case boton of 
+                        _ -> menuTablas
+
+                "5" -> do
+                    clearScreen
+                    putStrLn "Presione cualquier tecla para volver al menu"
+                    putStr "Cantidad:"
+                    historico <- loadJSON "src/json/Historico.json"
+                    mostrar historico
+                    hFlush stdout
+                    boton <- getLine
+                    case boton of 
+                        _ -> menuTablas
 
 
-desempaquetar::Maybe[[String]]->[[String]]
-desempaquetar (Just lista) = lista
-desempaquetar Nothing = []
+                "6" -> do
+                    menuPrincipal
+
+                _ -> do 
+                    putStrLn "Opcion invalida. \n Reiniciando..."
+                    threadDelay 2000000
+                    menuTablas

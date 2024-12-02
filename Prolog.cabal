@@ -30,6 +30,7 @@ library
       Historico
       Lib
       Materia
+      Otros
       Profesor
   other-modules:
       Paths_Prolog
