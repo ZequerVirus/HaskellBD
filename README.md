@@ -54,7 +54,7 @@ Este es un proyecto Haskell que utiliza **Stack** como herramienta para gestiona
 Una vez que **Stack** esté instalado, necesitas clonar el repositorio del proyecto. Para hacerlo, abre una terminal y ejecuta:
 
 ```bash
-git clone https://github.com/ZequerVirus/Haskell
+git clone https://github.com/ZequerVirus/HaskellBD
 ```
 
 Esto descargará el código fuente del proyecto a tu máquina local.
@@ -107,7 +107,7 @@ Reemplaza `nombre-del-proyecto-exe` con el nombre de tu ejecutable (generalmente
 
 2. **Clonar el Repositorio**:
    ```bash
-   git clone https://github.com/usuario/mi-proyecto.git
+   git clone https://github.com/ZequerVirus/HaskellBD
    ```
 
 3. **Navegar al Directorio del Proyecto**:
