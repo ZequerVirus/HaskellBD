@@ -3,14 +3,17 @@ module Lib
         menuPrincipal,
         menuAltas,
         menuBajas,
+        menuTablas,
     ) where
 
 -- aqui las dependencias
-import System.IO (hFlush, stdout) --para mostrar bien los out
+import System.IO (hFlush, stdout,) --para mostrar bien los out
 import System.Console.ANSI (clearScreen) --para reiniciar la terminal
 import Control.Concurrent (threadDelay) --para tiempos de espera
 import Data.Aeson (encode, decode) -- encode en json
 import qualified Data.ByteString.Lazy as BL --para escribir archivos
+import Control.Exception (evaluate)
+--import Control.DeepSeq (force) -- forzar que los archivos cierren
 -- dependencias de tablas
 import Historico
 import Alumno 
@@ -24,10 +27,21 @@ import GrupoMateria
 menuPrincipal:: IO()
 menuPrincipal = do 
                 clearScreen
+                putStr "\nAlumnos: " 
+                alumnos <- loadJSON "src/json/Alumno.json"
+
+                putStr "\nProfesores: " 
+                alumnos <- loadJSON "src/json/Profesor.json"
+
+                putStr "\nMaterias: " 
+                alumnos <- loadJSON "src/json/Materia.json"
+
+
                 putStrLn "\n--------Menu-Principal------"
                 putStrLn "1. Altas"
                 putStrLn "2. Bajas"
-                putStrLn "3. Salir"
+                putStrLn "3. Mostrar Tablas"
+                putStrLn "4. Salir"
                 putStrLn "----------------------------"
                 putStr "Escoge una opcion: "
                 
@@ -43,7 +57,11 @@ menuPrincipal = do
                         menuBajas
 
                     "3" -> do 
+                        menuTablas
+
+                    "4" -> do 
                         --return() no hace nada, salida limpia
+                        clearScreen
                         return()
 
                     _ -> do 
@@ -73,15 +91,16 @@ menuAltas = do
                         putStr "Inserte Grupo-Materia (ID Sigla Codigo): "
                         hFlush stdout
                         -- recibo id, sigla materia y codigo profesor
-                        iDsigcod <- getLine
-                        let (iD:sig:cod:_) = words iDsigcod
+                        sigcod <- getLine
+                        let (sig:cod:_) = words sigcod
 
                         let path = "src/json/GrupoMateria.json"
                         gm <- loadJSON path
+                        let iD = show (length gm)
                         let newgm = addGrupoMateria iD sig cod gm
                         saveJSON path newgm
                         putStr "Anadido con exito"
-                        threadDelay 1000000
+                        threadDelay 2000000
                         menuAltas
 
                     "2" -> do 
@@ -93,10 +112,11 @@ menuAltas = do
 
                         let path = "src/json/Historico.json"
                         historicos <- loadJSON path
+                        -- usar print historicos si no funciona
                         let newhistoricos = addHistorico reg sig nota historicos
                         saveJSON path newhistoricos
                         putStr "Anadido con exito"
-                        threadDelay 1000000
+                        threadDelay 2000000
                         menuAltas
 
                     "3" -> do 
@@ -105,7 +125,7 @@ menuAltas = do
                     _ -> do 
                         putStrLn "Opcion invalida.\n Reiniciando..."
                         --esta en microsegundos (1000000 ms = 1 s)
-                        threadDelay 1000000 
+                        threadDelay 2000000 
                         menuAltas
 
 menuBajas:: IO()
@@ -165,21 +185,35 @@ menuBajas = do
                     _ -> do 
                         putStrLn "Opcion invalida.\n Reiniciando..."
                         --esta en microsegundos (1000000 ms = 1 s)
-                        threadDelay 1000000 
+                        threadDelay 2000000 
                         menuBajas
+
+menuTablas:: IO()
+menuTablas = do
+             clearScreen
+             putStrLn "-------------Menu-Tablas------------"
+             putStrLn "1. Mostrar Alumnos"
+             putStrLn "2. Mostrar Profesores"
+             putStrLn "3. Mostrar Materia"
+             putStrLn "4. Mostrar GrupoMateria"
+             putStrLn "5. Mostrar Historico"
+             putStrLn "6. Volver (menu principal)"
+             putStrLn "------------------------------------"
 
 saveJSON::FilePath->[[String]]->IO()
 -- funcion para guardar las tablas en su respectivo JSON
 saveJSON path tabla = do 
                       let encodetabla = encode tabla 
-                      BL.writeFile path encodetabla 
+                      BL.writeFile path encodetabla
 
 loadJSON::FilePath->IO([[String]])
 -- funcion para obtener el contenido de las tablas desde su JSON
 loadJSON path = do 
                 tabla <- BL.readFile path
                 let contenido = decode tabla
-                return (desempaquetar contenido)
+                print (length(desempaquetar contenido))
+                return (desempaquetar contenido) 
+
 
 desempaquetar::Maybe[[String]]->[[String]]
 desempaquetar (Just lista) = lista
