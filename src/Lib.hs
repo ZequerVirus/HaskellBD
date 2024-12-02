@@ -77,6 +77,12 @@ menuAltas = do
                         -- asigno con words los datos recibidos y los almaceno en sus variables
                         let (iD:sig:cod:_) = words iDsigcod
 
+                        let path = "json/GrupoMateria.json"
+                        let gm = loadJSON path
+                        let newgm = addGrupoMateria iD sig cod gm
+                        saveJSON path newgm
+
+
                     "2" -> do 
                         putStr "Inserte Historico (Registro Sigla Nota): "
                         hFlush stdout
