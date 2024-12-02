@@ -153,7 +153,7 @@ menuBajas = do
 
                         let path = "src/json/Alumno.json"
                         alumnos <- loadJSON path
-                        let newalumnos= deleteAlumno register alumnos
+                        let newalumnos = deleteAlumno register alumnos
                         saveJSON path newalumnos
                         putStrLn "Eliminado con exito"
                         threadDelay 1000000
@@ -181,7 +181,7 @@ menuBajas = do
 
                         let path = "src/json/Materia.json"
                         materias <- loadJSON path
-                        let newmaterias= deleteMateria siglas materias
+                        let newmaterias= deleteMateria sigla materias
                         saveJSON path newmaterias
                         putStrLn "Eliminado con exito"
                         threadDelay 1000000
@@ -209,7 +209,7 @@ menuBajas = do
                         let path = "src/json/Historico.json"
                         historicos <- loadJSON path
                         let newhistoricos= deleteHistorico register iD historicos
-                        saveJSON path newalumnos
+                        saveJSON path newhistoricos
                         putStrLn "Eliminado con exito"
                         threadDelay 1000000
                         menuBajas

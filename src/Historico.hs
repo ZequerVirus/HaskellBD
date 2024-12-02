@@ -27,7 +27,7 @@ deleteHistorico reg iD historicos = let
                                       posicion = buscarHistorico reg iD historicos 0
                                       newhistoricos = eliminarElemento historicos posicion
                                     in 
-                                      if posicion < (length historico) then 
+                                      if posicion < (length historicos) then 
                                         newhistoricos
                                       else 
                                         error "Error - Posicion invalida"
